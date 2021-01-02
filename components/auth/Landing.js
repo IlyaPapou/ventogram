@@ -12,12 +12,12 @@ export default function Landing({ navigation }) {
   return (
     <View style={styles.container}>
       <Button
-        title="Register"
-        onPress={() => navigation.navigate('Register')}
+        title="Sign In"
+        onPress={() => navigation.navigate('SignIn')}
       />
       <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
+        title="Sign Up"
+        onPress={() => navigation.navigate('SignUp')}
       />
     </View>
   );

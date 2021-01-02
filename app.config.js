@@ -1,4 +1,4 @@
-import sentryConfig from './configs/sentry';
+import 'dotenv/config';
 
 export default {
   expo: {
@@ -35,9 +35,9 @@ export default {
         {
           file: 'sentry-expo/upload-sourcemaps',
           config: {
-            organization: sentryConfig.organization,
-            project: sentryConfig.project,
-            authToken: sentryConfig.organization,
+            organization: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
           },
         },
       ],

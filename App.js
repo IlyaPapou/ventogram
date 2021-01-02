@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as firebase from 'firebase';
 import * as Sentry from 'sentry-expo';
 import LandingScreen from './components/auth/Landing';
-import RegisterScreen from './components/auth/Register';
+import SignUpScreen from './components/auth/SignUp';
+import SignInScreen from './components/auth/SignIn';
 import firebaseConfig from './configs/firebase';
 import sentryConfig from './configs/sentry';
 
@@ -25,7 +26,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Landing">
         <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="SignIn" component={SignInScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
