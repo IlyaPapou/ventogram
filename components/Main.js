@@ -8,9 +8,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { fetchUser } from '../redux/actions/index';
 import FeedScreen from './main/Feed';
 import ProfileScreen from './main/Profile';
-import AddScreen from './main/Add';
 
 const Tab = createBottomTabNavigator();
+const EmptyScreen = () => null;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -27,7 +28,7 @@ export class Main extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Tab.Navigator>
+        <Tab.Navigator initialRouteName="Feed">
           <Tab.Screen
             name="Profile"
             component={ProfileScreen}
@@ -44,7 +45,13 @@ export class Main extends Component {
           />
           <Tab.Screen
             name="Add"
-            component={AddScreen}
+            component={EmptyScreen}
+            listeners={({ navigation }) => ({
+              tabPress: (event) => {
+                event.preventDefault();
+                navigation.navigate('MainAdd');
+              },
+            })}
             options={{
               tabBarIcon: ({ color, size }) => (<MaterialCommunityIcons name="plus-box" color={color} size={26} />),
             }}

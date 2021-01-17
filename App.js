@@ -14,6 +14,7 @@ import firebaseConfig from './configs/firebase';
 import sentryConfig from './configs/sentry';
 import rootReducer from './redux/reducers/index';
 import MainScreen from './components/Main';
+import AddScreen from './components/main/Add';
 
 Sentry.init({
   dsn: sentryConfig.dsn,
@@ -84,6 +85,7 @@ export default class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main">
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="MainAdd" component={AddScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
