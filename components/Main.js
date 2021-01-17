@@ -3,13 +3,13 @@ import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { fetchUser } from '../redux/actions/index';
 import FeedScreen from './main/Feed';
 import ProfileScreen from './main/Profile';
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 const EmptyScreen = () => null;
 
 const styles = StyleSheet.create({
@@ -28,7 +28,7 @@ export class Main extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Tab.Navigator initialRouteName="Feed">
+        <Tab.Navigator initialRouteName="Feed" labeled={false}>
           <Tab.Screen
             name="Profile"
             component={ProfileScreen}
