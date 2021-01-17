@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { fetchUser } from '../redux/actions/index';
+import FeedScreen from './main/Feed';
 
+const Tab = createBottomTabNavigator();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -19,14 +22,11 @@ export class Main extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
     return (
       <View style={styles.container}>
-        <Text>
-          {currentUser.name.length ? currentUser.name : 'User'}
-          {' '}
-          is Signed In
-        </Text>
+        <Tab.Navigator>
+          <Tab.Screen name="Feed" component={FeedScreen} />
+        </Tab.Navigator>
       </View>
     );
   }
