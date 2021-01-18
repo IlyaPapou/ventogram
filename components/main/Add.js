@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Button,
+  StyleSheet, Text, View, Button, Image, Platform,
 } from 'react-native';
 import { Camera } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 
 const styles = StyleSheet.create({
   camera: {
@@ -22,41 +23,92 @@ const styles = StyleSheet.create({
   flipButton: {
     marginBottom: 20,
   },
+  pickedImg: {
+    aspectRatio: 1,
+    flex: 1,
+  },
 });
 
 export default function Add() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+      if (Platform.OS !== 'web') {
+        const mediaLibraryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        setHasMediaLibraryPermission.apply(mediaLibraryStatus.status === 'granted');
+
+        const cameraStatus = await Camera.requestPermissionsAsync();
+        setHasCameraPermission(cameraStatus.status === 'granted');
+      }
     })();
   }, []);
 
-  if (hasPermission === null) {
+  const takePicture = async () => {
+    if (camera) {
+      const data = await camera.takePictureAsync();
+      setImage(data.uri);
+    }
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  if (hasCameraPermission === null || hasMediaLibraryPermission === null) {
     return <View />;
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  if (hasCameraPermission === false || hasMediaLibraryPermission === null) {
+    return <Text>No access to camera or media library</Text>;
+  }
+
+  let displayedImg;
+  if (image) {
+    displayedImg = <Image style={styles.pickedImg} source={{ uri: image }} />;
+  } else {
+    displayedImg = <Camera ref={(ref) => setCamera(ref)} style={styles.camera} type={type} ratio="1:1" />;
+  }
+  let cameraButton;
+  if (image) {
+    cameraButton = <Button title="Return to camera" onPress={() => setImage(undefined)} />;
+  } else {
+    cameraButton = (
+      <Button
+        title="Flip camera"
+        onPress={() => {
+          setType(
+            type === Camera.Constants.Type.back
+              ? Camera.Constants.Type.front
+              : Camera.Constants.Type.back,
+          );
+        }}
+      />
+    );
   }
   return (
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
-        <Camera style={styles.camera} type={type} ratio="1:1" />
+        {displayedImg}
       </View>
       <View style={styles.flipButton}>
-        <Button
-          title="Flip camera"
-          onPress={() => {
-            setType(
-              type === Camera.Constants.Type.back
-                ? Camera.Constants.Type.front
-                : Camera.Constants.Type.back,
-            );
-          }}
-        />
+        <Button title="Take picture" onPress={() => takePicture()} />
+        <Button title="Choose from the gallery" onPress={() => pickImage()} />
+        {cameraButton}
       </View>
     </View>
   );
