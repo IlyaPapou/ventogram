@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Button, TextInput } from 'react-native';
 import firebase from 'firebase';
+import 'firebase/firestore';
 
 class SignUp extends Component {
   constructor(props) {
