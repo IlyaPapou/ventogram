@@ -16,9 +16,22 @@ const styles = StyleSheet.create({
 
 export default function Save(props) {
   const [caption, setCaption] = useState(null);
-  const { route } = props;
+  const { route, navigation } = props;
   const { image } = route.params;
+  const savePostData = (imgUrl) => {
+    firebase.firestore()
+      .collection('posts')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userPosts')
+      .add({
+        imgUrl,
+        caption,
+        creation: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => navigation.popToTop());
+  };
   const uploadImage = async () => {
+    // TODO: Move all line values to general const
     const resizedImgUri = (await ImageManipulator.manipulateAsync(
       image,
       [{ resize: { width: 900 } }],
@@ -27,20 +40,23 @@ export default function Save(props) {
     const childPath = `post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
     const response = await fetch(resizedImgUri);
     const blob = await response.blob();
-    const task = firebase.storage().ref().child(childPath).put(blob);
+    const task = firebase.storage()
+      .ref()
+      .child(childPath)
+      .put(blob);
     const taskProgress = (snapshot) => {
       console.log(`transferred: ${snapshot.bytesTransferred}`);
     };
-    const taskCompleted = () => {
-      task.snapshot.ref.getDownloadURL().then((res) => {
-        console.log(res);
-      });
+    const taskCompleted = async () => {
+      const imgUrl = await task.snapshot.ref.getDownloadURL();
+      savePostData(imgUrl);
     };
-    const taskError = (snapshot) => {
-      console.log(snapshot);
+    const taskError = (err) => {
+      throw err;
     };
     task.on('state_changed', taskProgress, taskError, taskCompleted);
   };
+
   return (
     <View style={styles.container}>
       <Image source={{ uri: image }} />
@@ -53,6 +69,7 @@ export default function Save(props) {
   );
 }
 
+// FIXME: fix prop types
 Save.propTypes = {
   route: PropTypes.func.isRequired,
 };
