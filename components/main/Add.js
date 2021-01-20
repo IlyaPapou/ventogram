@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Add() {
+export default function Add({ navigation }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState(null);
   const [camera, setCamera] = useState(null);
@@ -62,8 +62,6 @@ export default function Add() {
       aspect: [1, 1],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.cancelled) {
       setImage(result.uri);
@@ -106,9 +104,10 @@ export default function Add() {
         {displayedImg}
       </View>
       <View style={styles.flipButton}>
-        <Button title="Take picture" onPress={() => takePicture()} />
+        {!image && <Button title="Take a picture" onPress={() => takePicture()} />}
         <Button title="Choose from the gallery" onPress={() => pickImage()} />
         {cameraButton}
+        {image && <Button title="Save" onPress={() => navigation.navigate('Save', { image })} />}
       </View>
     </View>
   );

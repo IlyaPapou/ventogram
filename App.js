@@ -15,6 +15,7 @@ import sentryConfig from './configs/sentry';
 import rootReducer from './redux/reducers/index';
 import MainScreen from './components/Main';
 import AddScreen from './components/main/Add';
+import SaveScreen from './components/main/Save';
 
 Sentry.init({
   dsn: sentryConfig.dsn,
@@ -62,6 +63,7 @@ export default class App extends Component {
 
   render() {
     const { isSignedIn, isLoaded } = this.state;
+    const { navigation } = this.props;
     if (!isLoaded) {
       return (
         <View style={styles.container}>
@@ -85,7 +87,8 @@ export default class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main">
             <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="MainAdd" component={AddScreen} />
+            <Stack.Screen name="MainAdd" component={AddScreen} navigation={navigation} />
+            <Stack.Screen name="Save" component={SaveScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
