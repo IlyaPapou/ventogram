@@ -40,7 +40,7 @@ export default function Add({ navigation }) {
     (async () => {
       if (Platform.OS !== 'web') {
         const mediaLibraryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        setHasMediaLibraryPermission.apply(mediaLibraryStatus.status === 'granted');
+        setHasMediaLibraryPermission(mediaLibraryStatus.status === 'granted');
 
         const cameraStatus = await Camera.requestPermissionsAsync();
         setHasCameraPermission(cameraStatus.status === 'granted');
@@ -76,12 +76,14 @@ export default function Add({ navigation }) {
   }
 
   let displayedImg;
+  let cameraButton;
+
   if (image) {
     displayedImg = <Image style={styles.pickedImg} source={{ uri: image }} />;
   } else {
     displayedImg = <Camera ref={(ref) => setCamera(ref)} style={styles.camera} type={type} ratio="1:1" />;
   }
-  let cameraButton;
+
   if (image) {
     cameraButton = <Button title="Return to camera" onPress={() => setImage(undefined)} />;
   } else {
