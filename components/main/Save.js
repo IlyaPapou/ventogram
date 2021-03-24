@@ -69,7 +69,6 @@ export default function Save(props) {
   );
 }
 
-// FIXME: fix prop types
 Save.propTypes = {
-  route: PropTypes.func.isRequired,
+  route: PropTypes.shape(React.propTypes).isRequired,
 };

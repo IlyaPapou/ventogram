@@ -12,10 +12,11 @@ const user = (state = initialState, action) => {
         ...state,
         currentUser: action.currentUser,
       };
-    case USER_POSTS_STATE_CHANGE: return {
-      ...state,
-      posts: action.posts,
-    };
+    case USER_POSTS_STATE_CHANGE:
+      return {
+        ...state,
+        posts: action.posts,
+      };
     default: return state;
   }
 };
