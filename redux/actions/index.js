@@ -1,9 +1,10 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
 import { USER_POSTS_STATE_CHANGE, USER_STATE_CHANGE } from '../constants/index';
-import transformUserPostsToViewModel from '../../services/user.transformer.service';
+import transformFirebaseDataToViewModel from '../../services/user.transformer.service';
 
-export const fetchUser = () => (dispatch) => firebase.firestore()
+export const fetchUser = () => (dispatch) => firebase
+  .firestore()
   .collection('users')
   .doc(firebase.auth().currentUser.uid)
   .get()
@@ -15,13 +16,14 @@ export const fetchUser = () => (dispatch) => firebase.firestore()
     }
   });
 
-export const fetchUserPosts = () => (dispatch) => firebase.firestore()
+export const fetchUserPosts = () => (dispatch) => firebase
+  .firestore()
   .collection('posts')
   .doc(firebase.auth().currentUser.uid)
   .collection('userPosts')
   .orderBy('creation', 'asc')
   .get()
   .then((snapshot) => {
-    const posts = transformUserPostsToViewModel(snapshot.docs);
+    const posts = transformFirebaseDataToViewModel(snapshot.docs);
     dispatch({ type: USER_POSTS_STATE_CHANGE, posts });
   });

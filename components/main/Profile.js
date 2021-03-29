@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   View, Text, Image, FlatList, StyleSheet,
 } from 'react-native';
+import firebase from 'firebase';
+import transformFirebaseDataToViewModel from '../../services/user.transformer.service';
+
+require('firebase/firestore');
 
 const styles = StyleSheet.create({
   container: {
@@ -18,23 +22,59 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 200,
   },
-  info: {
-    margin: 20,
-  },
 });
 function Profile(props) {
-  const { currentUser, posts } = props;
+  const [userPosts, setUserPosts] = useState([]);
+  const [user, setUser] = useState(null);
+  const { route } = props;
+
+  useEffect(() => {
+    const { currentUser, posts } = props;
+    if (route.params.uid === firebase.auth().currentUser.uid) {
+      setUser(currentUser);
+      setUserPosts(posts);
+    } else {
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(route.params.uid)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.exists) {
+            setUser(snapshot.data());
+          } else {
+            console.log('User does not exist');
+          }
+        });
+      firebase
+        .firestore()
+        .collection('posts')
+        .doc(route.params.uid)
+        .collection('userPosts')
+        .orderBy('creation', 'asc')
+        .get()
+        .then((snapshot) => {
+          const transformedPosts = transformFirebaseDataToViewModel(snapshot.docs);
+          setUserPosts(transformedPosts);
+        });
+    }
+  }, [route.params.uid]);
+
+  if (user === null) {
+    return <View />;
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.info}>
-        <Text>{currentUser.name}</Text>
-        <Text>{currentUser.email}</Text>
+      <View>
+        <Text>{user.name}</Text>
+        <Text>{user.email}</Text>
       </View>
       <View style={styles.gallery}>
         <FlatList
           numColumns={3}
           horizontal={false}
-          data={posts}
+          data={userPosts}
           renderItem={({ item }) => (
             <Image
               style={styles.image}
@@ -59,4 +99,5 @@ export default connect(mapStateToProps, null)(Profile);
 Profile.propTypes = {
   currentUser: PropTypes.shape(React.propTypes).isRequired,
   posts: PropTypes.array.isRequired,
+  route: PropTypes.shape(React.propTypes).isRequired,
 };

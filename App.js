@@ -16,6 +16,7 @@ import rootReducer from './redux/reducers/index';
 import MainScreen from './components/Main';
 import AddScreen from './components/main/Add';
 import SaveScreen from './components/main/Save';
+import SearchScreen from './components/main/Search';
 
 Sentry.init({
   dsn: sentryConfig.dsn,
@@ -75,7 +76,7 @@ export default class App extends Component {
       return (
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Landing">
-            <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Landing" component={LandingScreen} />
             <Stack.Screen name="SignIn" component={SignInScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
           </Stack.Navigator>
@@ -86,9 +87,10 @@ export default class App extends Component {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main">
-            <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Main" component={MainScreen} />
             <Stack.Screen name="MainAdd" component={AddScreen} navigation={navigation} />
             <Stack.Screen name="Save" component={SaveScreen} navigation={navigation} />
+            <Stack.Screen name="Search" component={SearchScreen} navigation={navigation} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

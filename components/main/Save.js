@@ -30,6 +30,7 @@ export default function Save(props) {
       })
       .then(() => navigation.popToTop());
   };
+  // TODO: Add saving in process handler
   const uploadImage = async () => {
     // TODO: Move all line values to general const
     const resizedImgUri = (await ImageManipulator.manipulateAsync(
@@ -40,7 +41,8 @@ export default function Save(props) {
     const childPath = `post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
     const response = await fetch(resizedImgUri);
     const blob = await response.blob();
-    const task = firebase.storage()
+    const task = firebase
+      .storage()
       .ref()
       .child(childPath)
       .put(blob);
