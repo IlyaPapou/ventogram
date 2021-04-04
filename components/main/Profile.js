@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
+  Dimensions,
   View, Text, Image, FlatList, StyleSheet,
 } from 'react-native';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import firebase from 'firebase';
 import transformFirebaseDataToViewModel from '../../services/user.transformer.service';
 
 require('firebase/firestore');
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 40,
-  },
-  gallery: {
-    flex: 1,
-  },
-  image: {
-    aspectRatio: 1 / 1,
-    flex: 1,
-    height: 200,
-  },
-});
 function Profile(props) {
+  const { width } = Dimensions.get('window');
   const [userPosts, setUserPosts] = useState([]);
   const [user, setUser] = useState(null);
   const { route } = props;
+  const imgSide = width / 3;
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      marginTop: 40,
+    },
+    gallery: {
+      flex: 1,
+    },
+    image: {
+      aspectRatio: 1 / 1,
+      flex: 1,
+      height: imgSide,
+      width: imgSide,
+    },
+    imageContainer: {
+      flex: 1 / 3,
+    },
+  });
 
   useEffect(() => {
     const { currentUser, posts } = props;
@@ -60,7 +68,7 @@ function Profile(props) {
     }
   }, [route.params.uid]);
 
-  if (user === null) {
+  if (!user) {
     return <View />;
   }
 
@@ -76,10 +84,12 @@ function Profile(props) {
           horizontal={false}
           data={userPosts}
           renderItem={({ item }) => (
-            <Image
-              style={styles.image}
-              source={{ uri: item.imgUrl }}
-            />
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.image}
+                source={{ uri: item.imgUrl }}
+              />
+            </View>
           )}
           keyExtractor={(item) => item.id}
         />
