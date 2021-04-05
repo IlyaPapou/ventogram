@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Button, TextInput } from 'react-native';
+import {
+  View, Button, TextInput, Alert,
+} from 'react-native';
 import firebase from 'firebase';
 
 class SignIn extends Component {
@@ -16,8 +18,8 @@ class SignIn extends Component {
     const { email, password } = this.state;
     firebase.auth()
       .signInWithEmailAndPassword(email, password)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then((res) => Alert.alert(res))
+      .catch((err) => Alert.alert(err));
   }
 
   render() {

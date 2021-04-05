@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore';
-import { USER_POSTS_STATE_CHANGE, USER_STATE_CHANGE } from '../constants/index';
+import { Alert } from 'react-native';
+import { USER_POSTS_STATE_CHANGE, USER_STATE_CHANGE, USER_FOLLOWING_STATE_CHANGE } from '../constants/index';
 import transformFirebaseDataToViewModel from '../../services/user.transformer.service';
 
 export const fetchUser = () => (dispatch) => firebase
@@ -12,7 +13,7 @@ export const fetchUser = () => (dispatch) => firebase
     if (snapshot.exists) {
       dispatch({ type: USER_STATE_CHANGE, currentUser: snapshot.data() });
     } else {
-      console.log('User does not exist');
+      Alert.alert('User does not exist');
     }
   });
 
@@ -26,4 +27,14 @@ export const fetchUserPosts = () => (dispatch) => firebase
   .then((snapshot) => {
     const posts = transformFirebaseDataToViewModel(snapshot.docs);
     dispatch({ type: USER_POSTS_STATE_CHANGE, posts });
+  });
+
+export const fetchUserFollowing = () => (dispatch) => firebase
+  .firestore()
+  .collection('following')
+  .doc(firebase.auth().currentUser.uid)
+  .collection('userFollowing')
+  .onSnapshot((snapshot) => {
+    const following = snapshot.docs.map((doc) => doc.id);
+    dispatch({ type: USER_FOLLOWING_STATE_CHANGE, following });
   });

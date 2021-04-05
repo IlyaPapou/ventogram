@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, Button, TextInput } from 'react-native';
+import {
+  View, Button, TextInput, Alert,
+} from 'react-native';
 import firebase from 'firebase';
 import 'firebase/firestore';
 
@@ -27,7 +29,7 @@ class SignUp extends Component {
             email,
           });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => Alert.alert(err));
   }
 
   render() {

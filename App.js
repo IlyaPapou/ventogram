@@ -33,7 +33,6 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
   },
 });
 

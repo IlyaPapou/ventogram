@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firebase from 'firebase';
-import { fetchUser, fetchUserPosts } from '../redux/actions/index';
+import { fetchUser, fetchUserPosts, fetchUserFollowing } from '../redux/actions/index';
 import FeedScreen from './main/Feed';
 import SearchScreen from './main/Search';
 import ProfileScreen from './main/Profile';
@@ -17,15 +17,15 @@ const EmptyScreen = () => null;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
   },
 });
 
 export class Main extends Component {
   componentDidMount() {
-    const { fetchUserAction, fetchUserPostsAction } = this.props;
+    const { fetchUserAction, fetchUserPostsAction, fetchUserFollowingAction } = this.props;
     fetchUserAction();
     fetchUserPostsAction();
+    fetchUserFollowingAction();
   }
 
   render() {
@@ -81,6 +81,7 @@ export class Main extends Component {
 Main.propTypes = {
   fetchUserAction: PropTypes.func.isRequired,
   fetchUserPostsAction: PropTypes.func.isRequired,
+  fetchUserFollowingAction: PropTypes.func.isRequired,
   currentUser: PropTypes.shape({
     email: PropTypes.string.isRequired,
     name: PropTypes.string,
@@ -101,6 +102,7 @@ const mapStateToProps = (store) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchUserAction: fetchUser,
   fetchUserPostsAction: fetchUserPosts,
+  fetchUserFollowingAction: fetchUserFollowing,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

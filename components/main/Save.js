@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, TextInput, Image, StyleSheet, Button,
+  View, TextInput, Image, StyleSheet, Button, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import firebase from 'firebase';
@@ -47,7 +47,7 @@ export default function Save(props) {
       .child(childPath)
       .put(blob);
     const taskProgress = (snapshot) => {
-      console.log(`transferred: ${snapshot.bytesTransferred}`);
+      Alert.alert(`transferred: ${snapshot.bytesTransferred}`);
     };
     const taskCompleted = async () => {
       const imgUrl = await task.snapshot.ref.getDownloadURL();
